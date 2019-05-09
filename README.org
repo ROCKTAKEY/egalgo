@@ -1,0 +1,8 @@
+[[https://github.com/ROCKTAKEY/egalgo][https://img.shields.io/github/tag/ROCKTAKEY/egalgo.svg?style=flat-square]]
+[[file:LICENSE][https://img.shields.io/github/license/ROCKTAKEY/egalgo.svg?style=flat-square]]
+[[https://travis-ci.com/ROCKTAKEY/egalgo/][https://img.shields.io/travis/com/ROCKTAKEY/egalgo/master.svg?style=flat-square]]
+* Genetic algorithm for Emacs
+
+* How to Use?
+* License
+  This package is licensed by GPLv3. See [[file:LICENSE][LICENSE]].
