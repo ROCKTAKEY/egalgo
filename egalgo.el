@@ -30,6 +30,18 @@
 
 
 
+(defmacro egalgo--crossover (index gene1 gene2)
+  "Crossover GENE1 and GENE2 on INDEXth gap.
+Do not use 0 (and less) as INDEX. First gap is indexed 1."
+  (declare (debug (integerp listp listp)))
+  (let ((temp (gensym)))
+    `(progn
+       (when (<= ,index 0)
+        (error "You cannot use 0 or less number as index."))
+       (setq ,temp (nthcdr ,index ,gene1))
+       (setcdr (nthcdr (1- ,index) ,gene1) (nthcdr ,index ,gene2))
+       (setcdr (nthcdr (1- ,index) ,gene2) ,temp)
+       (list ,gene1 ,gene2))))
 
 (provide 'egalgo)
 ;;; egalgo.el ends here
