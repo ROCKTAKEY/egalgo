@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+(require 'egalgo)
 
 (ert-deftest egalgo--crossover ()
   (should
