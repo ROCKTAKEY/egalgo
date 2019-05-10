@@ -34,7 +34,7 @@
   "Crossover GENE1 and GENE2 on INDEXth gap.
 Do not use 0 (and less) as INDEX. First gap is indexed 1."
   (declare (debug (integerp listp listp)))
-  (let ((temp (gensym)))
+  (let ((temp (cl-gensym)))
     `(progn
        (when (<= ,index 0)
         (error "You cannot use 0 or less number as index."))
