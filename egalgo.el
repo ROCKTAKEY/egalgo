@@ -43,13 +43,8 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
        (setcdr (nthcdr (1- ,index) ,gene2) ,temp)
        (list ,gene1 ,gene2))))
 
-(defvar egalgo--probability-accuracy 10000
-  "Accuracy of probability.  Used to change float to integer.")
-
 (defun egalgo--rand-bool (probability)
-  "Return t with probability of PROBABILITY.
-Accuracy is determined by `egalgo--probability-accuracy'."
-  (< (cl-random egalgo--probability-accuracy)
-     (* probability egalgo--probability-accuracy)))
+  "Return t with probability of PROBABILITY."
+  (< (cl-random 1.0) probability))
 (provide 'egalgo)
 ;;; egalgo.el ends here
