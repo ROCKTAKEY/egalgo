@@ -31,6 +31,21 @@
 (require 'cl-lib)
 (require 'dash)
 
+;; Some functions
+
+(defsubst egalgo--rand-bool (probability)
+  "Return t with probability of PROBABILITY."
+  (< (cl-random 1.0) probability))
+
+(defun egalgo--t-p (object)
+  ""
+  (eq t object))
+
+
+;; Selectors
+
+;; Crosover
+
 (defmacro egalgo--crossover (index gene1 gene2)
   "Crossover GENE1 and GENE2 on INDEXth gap.
 Do not use 0 (and less) as INDEX. First gap is indexed 1."
@@ -44,13 +59,8 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
        (setcdr (nthcdr (1- ,index) ,gene2) ,temp)
        (list ,gene1 ,gene2))))
 
-(defun egalgo--rand-bool (probability)
-  "Return t with probability of PROBABILITY."
-  (< (cl-random 1.0) probability))
-
-(defun egalgo--t-p (object)
-  ""
-  (eq t object))
+
+;; Generate nucleotides and a gene.
 
 (defvar egalgo--generate-alist
   '((vectorp  . egalgo--generate-range)
@@ -76,6 +86,9 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
 (defun egalgo--generate-choose-from-zero (arg)
   ""
   (cl-random arg))
+
+
+;; For users.
 
 (provide 'egalgo)
 ;;; egalgo.el ends here
