@@ -87,6 +87,21 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
   ""
   (cl-random arg))
 
+(defun egalgo--generate-genes (gene-definition size)
+  ""
+  (let ((gene-eval
+         (--map `(,(cdr (-first
+                         (lambda (arg) (funcall (car arg) it))
+                         egalgo--generate-alist))
+                  ',it)
+                gene-definition))
+        (result nil))
+    (--dotimes size
+      (push
+       (-map 'eval gene-eval)
+       result))
+    result))
+
 
 ;; For users.
 
