@@ -29,10 +29,10 @@
 (ert-deftest egalgo--crossover ()
   (should
    (equal
-    (list '(1 2 3 14 15 16 17 18 19 20)
-          '(11 12 13 4 5 6 7 8 9 10))
-    (let ((a '(1 2 3 4 5 6 7 8 9 10))
-         (b '(11 12 13 14 15 16 17 18 19 20)))
+    (list '( 1  2  3 14 15 16 17 18 19 20)
+          '(11 12 13  4  5  6  7  8  9 10))
+    (let ((a (list  1  2  3  4  5  6  7  8  9 10))
+          (b (list 11 12 13 14 15 16 17 18 19 20)))
      (egalgo--crossover 3 a b)
      (list a b))))
   (should-error
