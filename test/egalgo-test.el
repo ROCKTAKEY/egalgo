@@ -62,5 +62,17 @@
       (or (eq (nth 4 gene) nil)
           (eq (nth 4 gene) t))))))
 
+(ert-deftest egalgo-roulette-selector ()
+  (let* ((genes '((1 2 3)
+                  (4 5 6)
+                  (7 8 9)))
+         (rates '(1 4 7))
+         (selected (egalgo-roulette-selector genes rates)))
+    (should
+     (or (equal selected '(1 2 3))
+         (equal selected '(4 5 6))
+         (equal selected '(7 8 9))))
+    ))
+
 (provide 'egalgo-test)
 ;;; egalgo-test.el ends here
