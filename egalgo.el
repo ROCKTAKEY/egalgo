@@ -44,7 +44,7 @@
 
 ;; Selectors
 
-;; Crosover
+;; Crossover
 
 (defmacro egalgo--crossover (index gene1 gene2)
   "Crossover GENE1 and GENE2 on INDEXth gap.
