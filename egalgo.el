@@ -43,23 +43,23 @@
 
 
 ;; Selectors
+;; Selector should not select gene rated nil.
 
 (defvar egalgo-selector-alias
   '((roulette . egalgo-roulette-selector)))
 
-(defun egalgo-roulette-selector (genes rates)
-  "Select 1 gene by roulette from GENES with RATES.  Return gene.
-RATES are list of rate of each gene."
-  (let* ((rates
-          (if (functionp rates)
-              (mapcar rator genes)
-            rates))
-         (r-sum (-running-sum rates))
+(defun egalgo-roulette-selector (rates)
+  "Select 1 gene by roulette from RATES.  Return index.
+RATES are list of rate of each gene, or nil (unselectable)."
+  (let* ((temp (if (car rates) (car rates) 0))
+         (r-sum
+          (--map (setq temp (+ (if it it 0) temp))
+                 rates))
          (sum (car (last r-sum)))
          (rand (cl-random (float sum)))
          (i 0))
     (--each-while r-sum (< it rand) (setq i (1+ i)))
-    (nth i genes)))
+    i))
 
 ;; Crossover
 
