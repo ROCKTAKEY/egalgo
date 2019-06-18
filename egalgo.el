@@ -99,7 +99,7 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
   '((vectorp  . egalgo--generate-range)
     (listp    . egalgo--generate-choose)
     (egalgo--t-p    . egalgo--generate-bool)
-    (integerp . egalgo--generate-choose-from-zero)))
+    (integerp . egalgo--generate-choose-from-zero-to)))
 
 (defun egalgo--generate-range (arg)
   ""
@@ -116,7 +116,7 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
   ""
   (egalgo--rand-bool 0.5))
 
-(defun egalgo--generate-choose-from-zero (arg)
+(defun egalgo--generate-choose-from-zero-to (arg)
   ""
   (cl-random arg))
 
