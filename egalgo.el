@@ -60,6 +60,21 @@ RATES are list of rate of each gene, or nil (unselectable)."
          (i 0))
     (--each-while r-sum (< it rand) (setq i (1+ i)))
     i))
+
+(defun egalgo--select-2 (rates selector)
+  "Select 2 genes with roulette using RATES.
+Return list of 2 indexes."
+  (let* ((first  (funcall selector rates))
+         (temp (nth first rates))
+         second)
+    ;; Selected index is temporarily replaced nil (means unselectable).
+    (setf (nth first rates) nil)
+
+    (setq second (funcall selector rates))
+
+    (setf (nth first rates) temp)
+    (list first second)))
+
 
 ;; Crossover
 

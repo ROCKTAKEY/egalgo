@@ -70,5 +70,16 @@
          (equal selected 1)
          (equal selected 2)))))
 
+(ert-deftest egalgo--select-2 ()
+  (let* ((lst (egalgo--select-2 '(1 2 4 69) 'egalgo-roulette-selector))
+         (first (car lst))
+         (second (cadr lst)))
+    (dolist (it lst)
+      (should (or (equal it 0)
+                  (equal it 1)
+                  (equal it 2)
+                  (equal it 3))))
+    (should-not (equal first second))))
+
 (provide 'egalgo-test)
 ;;; egalgo-test.el ends here
