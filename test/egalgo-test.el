@@ -40,27 +40,27 @@
   (should-error
    (egalgo--crossover -10 '(1 2 3) '(4 5 6))))
 
-(ert-deftest egalgo--generate-genes ()
-  (let ((genes (egalgo--generate-genes
+(ert-deftest egalgo--generate-chromosomes ()
+  (let ((chromosomes (egalgo--generate-chromosomes
                 '(1 2 3 [10 20] t) 100)))
-    (dolist (gene genes)
+    (dolist (chromosome chromosomes)
      (should
-      (equal (nth 0 gene) 0))
-     (should
-      (or
-       (equal (nth 1 gene) 0)
-       (equal (nth 1 gene) 1)))
+      (equal (nth 0 chromosome) 0))
      (should
       (or
-       (equal (nth 2 gene) 0)
-       (equal (nth 2 gene) 1)
-       (equal (nth 2 gene) 2)))
+       (equal (nth 1 chromosome) 0)
+       (equal (nth 1 chromosome) 1)))
      (should
-      (and (< 10 (nth 3 gene))
-           (< (nth 3 gene) 20)))
+      (or
+       (equal (nth 2 chromosome) 0)
+       (equal (nth 2 chromosome) 1)
+       (equal (nth 2 chromosome) 2)))
      (should
-      (or (eq (nth 4 gene) nil)
-          (eq (nth 4 gene) t))))))
+      (and (< 10 (nth 3 chromosome))
+           (< (nth 3 chromosome) 20)))
+     (should
+      (or (eq (nth 4 chromosome) nil)
+          (eq (nth 4 chromosome) t))))))
 
 (ert-deftest egalgo-roulette-selector ()
   (let* ((rates '(1 4 7))

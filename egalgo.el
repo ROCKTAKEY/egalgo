@@ -43,14 +43,14 @@
 
 
 ;; Selectors
-;; Selector should not select gene rated nil.
+;; Selector should not select chromosome rated nil.
 
 (defvar egalgo-selector-alias
   '((roulette . egalgo-roulette-selector)))
 
 (defun egalgo-roulette-selector (rates)
-  "Select 1 gene by roulette from RATES.  Return index.
-RATES are list of rate of each gene, or nil (unselectable)."
+  "Select 1 chromosome by roulette from RATES.  Return index.
+RATES are list of rate of each chromosome, or nil (unselectable)."
   (let* ((temp (if (car rates) (car rates) 0))
          (r-sum
           (--map (setq temp (+ (if it it 0) temp))
@@ -62,7 +62,7 @@ RATES are list of rate of each gene, or nil (unselectable)."
     i))
 
 (defun egalgo--select-2 (rates selector)
-  "Select 2 genes with roulette using RATES.
+  "Select 2 chromosomes with roulette using RATES.
 Return list of 2 indexes."
   (let* ((first  (funcall selector rates))
          (temp (nth first rates))
@@ -78,8 +78,8 @@ Return list of 2 indexes."
 
 ;; Crossover
 
-(defmacro egalgo--crossover (index gene1 gene2)
-  "Crossover GENE1 and GENE2 on INDEXth gap.
+(defmacro egalgo--crossover (index chromosome1 chromosome2)
+  "Crossover CHROMOSOME1 and CHROMOSOME2 on INDEXth gap.
 Do not use 0 (and less) as INDEX. First gap is indexed 1."
   (declare (debug (integerp listp listp)))
   (let ((temp (cl-gensym))
@@ -87,13 +87,13 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
     `(let ((,i ,index))
        (when (<= ,i 0)
         (error "You cannot use 0 or less number as index."))
-       (setq ,temp (nthcdr ,i ,gene1))
-       (setcdr (nthcdr (1- ,i) ,gene1) (nthcdr ,i ,gene2))
-       (setcdr (nthcdr (1- ,i) ,gene2) ,temp)
-       (list ,gene1 ,gene2))))
+       (setq ,temp (nthcdr ,i ,chromosome1))
+       (setcdr (nthcdr (1- ,i) ,chromosome1) (nthcdr ,i ,chromosome2))
+       (setcdr (nthcdr (1- ,i) ,chromosome2) ,temp)
+       (list ,chromosome1 ,chromosome2))))
 
 
-;; Generate nucleotides and a gene.
+;; Generate nucleotides and a chromosome.
 
 (defvar egalgo--generate-alist
   '((vectorp  . egalgo--generate-range)
@@ -120,18 +120,18 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
   ""
   (cl-random arg))
 
-(defun egalgo--generate-genes (gene-definition size)
+(defun egalgo--generate-chromosomes (chromosome-definition size)
   ""
-  (let ((gene-eval
+  (let ((chromosome-eval
          (--map `(,(cdr (-first
                          (lambda (arg) (funcall (car arg) it))
                          egalgo--generate-alist))
                   ',it)
-                gene-definition))
+                chromosome-definition))
         (result nil))
     (--dotimes size
       (push
-       (-map 'eval gene-eval)
+       (-map 'eval chromosome-eval)
        result))
     result))
 
