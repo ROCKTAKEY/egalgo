@@ -81,7 +81,7 @@ Return list of 2 indexes."
 (defmacro egalgo--crossover (index chromosome1 chromosome2)
   "Crossover CHROMOSOME1 and CHROMOSOME2 on INDEXth gap.
 Do not use 0 (and less) as INDEX. First gap is indexed 1."
-  (declare (debug (integerp listp listp)))
+  (declare (debug (form place place)))
   (let ((temp (cl-gensym))
         (i (cl-gensym)))
     `(let ((,i ,index))
