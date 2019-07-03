@@ -146,5 +146,99 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
 
 ;; For users.
 
+(cl-defun egalgo-run (chromosome-definition
+                rater            ;Function returning non-negative float
+                &key
+                (size 100)       ;non-negative integer
+                (crossover 0.9)  ;[0, 1]
+                (mutation 0.01)  ;[0, 1]
+                (n-point-crossover 1)    ;t ... uniformcrossover
+                (selector 'roulette)     ;function or alias
+                (elite 0)                ;non-negative integer
+                (log nil)                ;bool
+                (termination 1000)       ;integer: generation number.
+                (async nil))             ;bool
+  ""
+  (let* ((chromosome-forms
+          (egalgo--generate-chromosome-forms chromosome-definition))
+         (chromosomes
+          (egalgo--generate-chromosomes-from-forms chromosome-forms size))
+         (selector (or (cdr (assq selector egalgo-selector-alias))
+                       selector))
+         (length (length chromosome-definition))
+         (generation 0)
+         i next-chromosomes selected-indexes old-rates rates)
+    (while
+        (cl-case termination
+          (t
+           (if (integerp termination)
+               (<= generation termination)
+             (error "Wrong type of argument."))))
+
+      (setq rates (-map rater chromosomes))
+
+      ;; Counter which has length of `next-chromosomes'.
+      (setq i 0)
+
+      (while (< i size)
+        (if (and (< 1 (- size i))
+                 (egalgo--rand-bool crossover))
+
+            ;; Crossover
+            (let (selected1 selected2)
+              ;; Select 2 chromosomes which will be crossovered.
+              (setq selected-indexes (egalgo--select-2 rates selector))
+              (setq selected1 (copy-list
+                               (nth (car  selected-indexes) chromosomes)))
+              (setq selected2 (copy-list
+                               (nth (cadr selected-indexes) chromosomes)))
+
+              ;; Crossover chromosomes.
+              (if (eq n-point-crossover t)
+                  ;; uniformcrossover.
+                  (cl-dotimes (n (1- length))
+                    (when (egalgo--rand-bool 0.5)
+                      (egalgo--crossover (1+ n) selected1 selected2)))
+                ;; `n-point-crossover' point crossover.
+                (cl-dotimes (n n-point-crossover)
+                  (egalgo--crossover
+                   (1+ (cl-random (1- length)))
+                   selected1 selected2)))
+
+              ;; Push the 2 crossovered chromosomes to next-chromosomes.
+              (push selected1 next-chromosomes)
+              (push selected2 next-chromosomes)
+              (setq i (+ i 2)))
+
+          ;; Push selected chromosome to the next-chromosomes.
+          (push (copy-list (nth (funcall selector rates) chromosomes))
+                next-chromosomes)
+          (setq i (1+ i))))
+
+      ;; Mutation
+      (let (new-ncl now)
+        (dolist (c next-chromosomes)
+          (dotimes (n length)
+            (when (egalgo--rand-bool mutation)
+              (setq now (nth n c))
+              (while (not (eq now
+                              (setq new-ncl (eval (aref chromosome-forms n))))))
+              (setf (nth n c) new-ncl)))))
+
+      ;; Save
+      (setq old-rates rates)
+      (setq chromosomes next-chromosomes)
+
+      (setq next-chromosomes nil)
+      (setq generation (1+ generation))
+
+      (message "generation: %d / Max rate: %f / Average rate: %f\n%s"
+               generation (-max rates)
+               (/ (-sum rates) size)
+               (prin1-to-string rates)))
+
+    (list :chromosomes chromosomes
+          :rates rates)))
+
 (provide 'egalgo)
 ;;; egalgo.el ends here
