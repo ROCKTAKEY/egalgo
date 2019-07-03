@@ -64,6 +64,14 @@
    :n-point-crossover t)                  ;unicrossover
 #+END_SRC
 
+* Returned value of ~egalgo-run~
+  ~egalgo-run~ returns plist. This have at least 2 elements.
+  - ~:chromosomes~: list of all chromosomes of last generation.
+  - ~:rates~: list of rates of all chromosomes of last generation.
+
+  You can get these value by using ~plist-get~. Use like
+  ~(plist-get result-of-egalgo-run :chromosomes)~
+
 * Arguments of ~egalgo-run~
   First and second argument (~chromosome-definition~ and ~rater~)
   are necessary, and other argument is optional.
