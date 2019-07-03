@@ -93,7 +93,7 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
        (list ,chromosome1 ,chromosome2))))
 
 
-;; Generate nucleotides and a chromosome.
+;; Generate genes and a chromosome.
 
 (defvar egalgo--generate-alist
   '((vectorp  . egalgo--generate-range)
