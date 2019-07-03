@@ -120,20 +120,28 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
   ""
   (cl-random arg))
 
-(defun egalgo--generate-chromosomes (chromosome-definition size)
+(defun egalgo--generate-chromosome-forms (chromosome-definition)
   ""
-  (let ((chromosome-eval
-         (--map `(,(cdr (-first
-                         (lambda (arg) (funcall (car arg) it))
-                         egalgo--generate-alist))
-                  ',it)
-                chromosome-definition))
-        (result nil))
+  (vconcat
+   (--map `(,(cdr (-first
+                   (lambda (arg) (funcall (car arg) it))
+                   egalgo--generate-alist))
+            ',it)
+          chromosome-definition)))
+
+(defun egalgo--generate-chromosomes-from-forms (chromosome-forms size)
+  ""
+  (let (result)
     (--dotimes size
       (push
-       (-map 'eval chromosome-eval)
+       (map 'list 'eval chromosome-forms)
        result))
     result))
+
+(defun egalgo--generate-chromosomes-from-definition (chromosome-definition size)
+  ""
+  (egalgo--generate-chromosomes-from-forms
+   (egalgo--generate-chromosome-forms chromosome-definition) size))
 
 
 ;; For users.

@@ -41,7 +41,7 @@
    (egalgo--crossover -10 '(1 2 3) '(4 5 6))))
 
 (ert-deftest egalgo--generate-chromosomes ()
-  (let ((chromosomes (egalgo--generate-chromosomes
+  (let ((chromosomes (egalgo--generate-chromosomes-from-definition
                 '(1 2 3 [10 20] t) 100)))
     (dolist (chromosome chromosomes)
      (should
