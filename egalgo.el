@@ -154,9 +154,10 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
                 (mutation 0.01)  ;[0, 1]
                 (n-point-crossover 1)    ;t ... uniformcrossover
                 (selector 'roulette)     ;function or alias
+                (termination 1000)       ;integer: generation number.
+                ;; arguments showed below are available in the future.
                 (elite 0)                ;non-negative integer
                 (log nil)                ;bool
-                (termination 1000)       ;integer: generation number.
                 (async nil))             ;bool
   ""
   (let* ((chromosome-forms
