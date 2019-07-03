@@ -231,12 +231,13 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
       (setq chromosomes next-chromosomes)
 
       (setq next-chromosomes nil)
-      (setq generation (1+ generation))
 
       (message "generation: %d / Max rate: %f / Average rate: %f\n%s"
                generation (-max rates)
                (/ (-sum rates) size)
-               (prin1-to-string rates)))
+               (prin1-to-string rates))
+
+      (setq generation (1+ generation)))
 
     (list :chromosomes chromosomes
           :rates rates)))
