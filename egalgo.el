@@ -222,8 +222,8 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
           (dotimes (n length)
             (when (egalgo--rand-bool mutation)
               (setq now (nth n c))
-              (while (not (eq now
-                              (setq new-ncl (eval (aref chromosome-forms n))))))
+              (while (eq now
+                         (setq new-ncl (eval (aref chromosome-forms n)))))
               (setf (nth n c) new-ncl)))))
 
       ;; Save
