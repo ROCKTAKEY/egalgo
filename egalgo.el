@@ -7,7 +7,9 @@
 
 ;; Version: 0.0.0
 
-;; Package-Requires: ((dash "2.14"))
+;; URL: https://github.com/ROCKTAKEY/egalgo
+
+;; Package-Requires: ((dash "2.14") (emacs "24"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
