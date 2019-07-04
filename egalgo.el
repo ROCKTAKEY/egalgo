@@ -196,9 +196,9 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
             (let (selected1 selected2)
               ;; Select 2 chromosomes which will be crossovered.
               (setq selected-indexes (egalgo--select-2 rates selector))
-              (setq selected1 (copy-list
+              (setq selected1 (cl-copy-list
                                (nth (car  selected-indexes) chromosomes)))
-              (setq selected2 (copy-list
+              (setq selected2 (cl-copy-list
                                (nth (cadr selected-indexes) chromosomes)))
 
               ;; Crossover chromosomes.
@@ -219,7 +219,7 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
               (setq i (+ i 2)))
 
           ;; Push selected chromosome to the next-chromosomes.
-          (push (copy-list (nth (funcall selector rates) chromosomes))
+          (push (cl-copy-list (nth (funcall selector rates) chromosomes))
                 next-chromosomes)
           (setq i (1+ i))))
 
