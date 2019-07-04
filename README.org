@@ -41,22 +41,22 @@
 
   ;; Minimum running.
   (egalgo-run
-   '(t t t t t t t t t t)                 ;t means bool nucleotide.
+   '(t t t t t t t t t t)                 ;t means boolean gene.
    #'knapsack-rater)
 
   ;; Additional running.
   (egalgo-run
-   '(t t t t t t t t t t)                 ;t means bool nucleotide.
+   '(t t t t t t t t t t)                 ;t means boolean gene.
    #'knapsack-rater
    :size 50             ;Size of each generation.
    :crossover 0.8       ;Probability of doing crossover.
-   :mutation 0.05       ;Probability of each nucleotide mutating.
+   :mutation 0.05       ;Probability of each gene mutating.
    :n-point-crossover 2 ;means 2 point crossover. `t' means unicrossover.
    :termination 200     ;Number of maximum generation.
    )
 
   (egalgo-run
-   '(t t t t t t t t t t)                 ;t means bool nucleotide.
+   '(t t t t t t t t t t)                 ;t means boolean gene.
    #'knapsack-rater
    :termination 100
    :size 30
