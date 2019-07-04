@@ -33,6 +33,11 @@
 (require 'cl-lib)
 (require 'dash)
 
+(defgroup egalgo ()
+  "Group for egalgo."
+  :group 'lisp
+  :prefix "egalgo-")
+
 ;; Some functions
 
 (defsubst egalgo--rand-bool (probability)
