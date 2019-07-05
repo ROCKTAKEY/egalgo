@@ -278,7 +278,7 @@ generation. Default value is 0.
            ((pred functionp)
             (funcall termination rates-log-stack generation))
            ((pred integerp)
-            (<= generation termination))
+            (< generation termination))
            (_ (error "Wrong type of argument"))))
 
       (setq chromosomes next-chromosomes)
