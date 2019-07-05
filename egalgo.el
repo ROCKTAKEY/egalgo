@@ -168,7 +168,7 @@ CHROMOSOME-FORMS."
   (let (result)
     (--dotimes size
       (push
-       (map 'list 'eval chromosome-forms)
+       (cl-map 'list 'eval chromosome-forms)
        result))
     result))
 
