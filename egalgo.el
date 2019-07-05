@@ -359,9 +359,10 @@ latest generation, for example.
            indexes)
        (list :chromosomes chromosomes
              :rates rates
-             :chromosomes-log chromosomes-log-stack
              :rates-log rates-log-stack
              :max-rate max-rate
+             :generation generation
+             :chromosomes-log chromosomes-log-stack
              :max-chromosomes-indexes
              (dotimes (n size)
                (when (= (nth n rates) max-rate)
