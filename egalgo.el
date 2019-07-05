@@ -308,11 +308,11 @@ generation. Default value is 0.
               ;; Crossover chromosomes.
               (if (eq n-point-crossover t)
                   ;; uniformcrossover.
-                  (cl-dotimes (n (1- length))
+                  (dotimes (n (1- length))
                     (when (egalgo--rand-bool 0.5)
                       (egalgo--crossover (1+ n) selected1 selected2)))
                 ;; `n-point-crossover' point crossover.
-                (cl-dotimes (_ n-point-crossover)
+                (dotimes (_ n-point-crossover)
                   (egalgo--crossover
                    (1+ (cl-random (1- length)))
                    selected1 selected2)))
