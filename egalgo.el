@@ -260,6 +260,9 @@ chromosomes of last generation. Default value is nil.
 
 ELITE is the number of elite chromosomes, which abusolutely stays until next
 generation. Default value is 0.
+
+If SHOW-RATES is t, display rates of chromosomes of each generation.
+Default value is nil.
 "
   (let* ((chromosome-forms
           (egalgo--generate-chromosome-forms chromosome-definition))
