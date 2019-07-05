@@ -167,11 +167,11 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
                 (n-point-crossover 1)    ;t ... uniformcrossover
                 (selector 'roulette)     ;function or alias
                 (termination 1000)       ;integer: generation number.
-                ;; arguments showed below are available in the future.
-                (elite 0)                ;non-negative integer
                 (log nil)                ;bool
-                (async nil))             ;bool
   ""
+                ;; arguments showed below are available in the future.
+                (_elite 0)                ;non-negative integer
+                (_async nil))             ;bool
   (let* ((chromosome-forms
           (egalgo--generate-chromosome-forms chromosome-definition))
          (chromosomes
@@ -213,7 +213,7 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
                     (when (egalgo--rand-bool 0.5)
                       (egalgo--crossover (1+ n) selected1 selected2)))
                 ;; `n-point-crossover' point crossover.
-                (cl-dotimes (n n-point-crossover)
+                (cl-dotimes (_n n-point-crossover)
                   (egalgo--crossover
                    (1+ (cl-random (1- length)))
                    selected1 selected2)))
