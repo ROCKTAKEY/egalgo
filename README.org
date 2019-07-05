@@ -62,6 +62,18 @@
    :size 30
    :mutation 0.01
    :n-point-crossover t)                  ;unicrossover
+
+  (egalgo-run
+   '(t t t t t t t t t t)
+   #'knapsack-rater
+   ;; termination can be function.
+   :termination
+   (lambda (stack-of-rates _generation)
+     (or
+      (not (nth 1 stack-of-rates))
+      (< 10 (abs (- (-sum (nth 0 stack-of-rates))
+                    (-sum (nth 1 stack-of-rates))))))))
+
 #+END_SRC
 
 * Returned value of ~egalgo-run~
@@ -168,19 +180,20 @@
 ** ~selector~ (optional, keyword)
    Function which /selects/ chromsomes used to crossover or take over.
    This function should:
-   - Should take 1 argument, which is list of rate of each chromosome
-   - Should return index of selected chromosome
-   - If rate is ~nil~, the chromosome must not be selected.
+   - take 1 argument, which is list of rate of each chromosome
+   - return index of selected chromosome
+   - NOT select the chromosome whose rate is ~nil~
 
    This can be alias, which is defined in ~egalgo-selector-alias~.
 
 ** ~termination~ (optional, keyword)
-   The number of maximum generation. Finish algorithm when generation
-   become the value.
-
-   This should be positive integer.
-   In the future, this will be able to function which returns
-   whether terminate or not.
+   ~termination~ is the number of maximum generation, or function which determine to
+   termination the algorithm or not.
+   If number, finish algorithm when generation become the value.
+   If function, continue algorithm when the function returns non-nil. The function
+   take 2 arguments, stack list of rates of all generation and generation number.
+   First element of the stack list is rates (list of rate of each chromosome) of
+   latest generation, for example.
 
 * License
   This package is licensed by GPLv3. See [[file:LICENSE][LICENSE]].

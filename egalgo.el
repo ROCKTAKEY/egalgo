@@ -54,7 +54,7 @@
   (< (cl-random 1.0) probability))
 
 (defun egalgo--t-p (object)
-  ""
+  "Return t if OBJECT is t."
   (eq t object))
 
 
@@ -62,11 +62,19 @@
 ;; Selector should not select chromosome rated nil.
 
 (defvar egalgo-selector-alias
-  '((roulette . egalgo-roulette-selector)))
+  '((roulette . egalgo-roulette-selector))
+  "Aliases for selectror of egalgo.
+each element is cons cell (ALIAS . FUNCTION).  You can use ALIAS
+on the argument SELECTOR of `egalgo-run', instead of FUNCTION.
+
+FUNCTION should:
+  - take 1 argument, which is list of rate of each chromosome
+  - return index of selected chromosome
+  - NOT select the chromosome whose rate is nil")
 
 (defun egalgo-roulette-selector (rates)
-  "Select 1 chromosome by roulette from RATES.  Return index.
-RATES are list of rate of each chromosome, or nil (unselectable)."
+  "Select 1 chromosome by roulette from RATES.  Return index of the selected.
+RATES are list of rate of each chromosome, or nil (means unselectable)."
   (let* ((temp (if (car rates) (car rates) 0))
          (r-sum
           (--map (setq temp (+ (if it it 0) temp))
@@ -78,7 +86,7 @@ RATES are list of rate of each chromosome, or nil (unselectable)."
     i))
 
 (defun egalgo--select-2 (rates selector)
-  "Select 2 chromosomes with roulette using RATES.
+  "Select 2 chromosomes with roulette using RATES by SELECTOR.
 Return list of 2 indexes."
   (let* ((first  (funcall selector rates))
          (temp (nth first rates))
@@ -96,13 +104,13 @@ Return list of 2 indexes."
 
 (defmacro egalgo--crossover (index chromosome1 chromosome2)
   "Crossover CHROMOSOME1 and CHROMOSOME2 on INDEXth gap.
-Do not use 0 (and less) as INDEX. First gap is indexed 1."
+Do not use 0 (and less) as INDEX.  First gap is indexed 1."
   (declare (debug (form place place)))
   (let ((temp (cl-gensym))
         (i (cl-gensym)))
-    `(let ((,i ,index))
+    `(let ((,i ,index) ,temp)
        (when (<= ,i 0)
-        (error "You cannot use 0 or less number as index."))
+        (error "You cannot use 0 or less number as index"))
        (setq ,temp (nthcdr ,i ,chromosome1))
        (setcdr (nthcdr (1- ,i) ,chromosome1) (nthcdr ,i ,chromosome2))
        (setcdr (nthcdr (1- ,i) ,chromosome2) ,temp)
@@ -115,29 +123,37 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
   '((vectorp  . egalgo--generate-range)
     (listp    . egalgo--generate-choose)
     (egalgo--t-p    . egalgo--generate-bool)
-    (integerp . egalgo--generate-choose-from-zero-to)))
+    (integerp . egalgo--generate-choose-from-zero-to))
+  "Used to determine gene generator from each element of chromosome-definition.
+Each element is cons cell (DETECTOR . GENERATOR).
+DETECTOR should be a function which takes 1 argument OBJECT, and returns
+t if OBJECT determines to use GENERATOR as generator of gene.
+GENERATOR should be a function which takes 1 argument OBJECT detected by
+DETECTOR, and returns generated gene.")
 
 (defun egalgo--generate-range (arg)
-  ""
+  "Genarate continuous gene.  ARG is vector which have 2 integer elements.
+Return decimal ranged from the first element to the second one."
   (let* ((bgn (float (aref arg 0)))
          (end (float (aref arg 1)))
          (range (- end bgn)))
     (+ (cl-random range) bgn)))
 
 (defun egalgo--generate-choose (arg)
-  ""
+  "Generate discrete gene.  ARG is list, one of whose elements is returned."
   (nth (cl-random (length arg)) arg))
 
 (defun egalgo--generate-bool (_arg)
-  ""
+  "Generate boolean gene.  Return nil or t."
   (egalgo--rand-bool 0.5))
 
 (defun egalgo--generate-choose-from-zero-to (arg)
-  ""
+  "Generate discrete gene.  Return non-negative integer which is less than ARG."
   (cl-random arg))
 
 (defun egalgo--generate-chromosome-forms (chromosome-definition)
-  ""
+  "Generate chromosome-forms from CHROMOSOME-DEFINITION.
+Return vector, each element of which is a form returning gene if evaluated."
   (vconcat
    (--map `(,(cdr (-first
                    (lambda (arg) (funcall (car arg) it))
@@ -146,7 +162,9 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
           chromosome-definition)))
 
 (defun egalgo--generate-chromosomes-from-forms (chromosome-forms size)
-  ""
+  "Generate SIZE chromosomes using CHROMOSOME-FORMS.
+Each element of chromosome is generated to evaluate each element of
+CHROMOSOME-FORMS."
   (let (result)
     (--dotimes size
       (push
@@ -155,7 +173,9 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
     result))
 
 (defun egalgo--generate-chromosomes-from-definition (chromosome-definition size)
-  ""
+  "Generate SIZE chromosomes using CHROMOSOME-DEFINITION.
+Each element of chromosome is generated to evaluate each element of
+CHROMOSOME-FORMS, which is generated from CHROMOSOME-DEFINITION."
   (egalgo--generate-chromosomes-from-forms
    (egalgo--generate-chromosome-forms chromosome-definition) size))
 
@@ -172,10 +192,65 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
                 (selector 'roulette)     ;function or alias
                 (termination 1000)       ;integer: generation number.
                 (log nil)                ;bool
-  ""
                 ;; arguments showed below are available in the future.
                 (_elite 0)                ;non-negative integer
                 (_async nil))             ;bool
+  "Run genetic algorithm with CHROMOSOME-DEFINITION and RATER.
+
+CHROMOSOME-DEFINITION is the first argument, and the value should be list.
+Each element expresses each gene.  Each element should be:
+
+  - t
+   Means boolean gene. On the genetic locus, there is t or nil
+   in chromosomes.
+
+  - Vector which has 2 elements
+   Means spreaded and continuous gene. For example, on the genetic locus
+   of [3 5], there is decimal value from 3 to 5 in chromosomes.
+
+  - list
+   Means discrete gene. For example, on genetic locus of (1 3 5 foo),
+   there is 1, 3, 5 or symbol foo in chromosomes.
+
+  - positive integer
+   Also means discrete gene. If the number is n, gene on the genetic locus can
+   be integer which is 0 or more, and less than n.
+   For example, 5 is same as (0 1 2 3 4).
+
+RATER should be a function which takes 1 argument, and returns non-negative
+integer or decimal. The argument is chromosome, which is defined
+by CHROMOSOME-DEFINITION. Returned value is rate of the chromosome passed
+as the argument.
+
+SIZE is the number of chromosomes in each generation.
+It should be positive integer. Default value is 100.
+
+CROSSOVER is probability of crossovering 2 chromosomes.
+If determine DO crossover, then select 2 chromosomes, and crossover them.
+If not, Select 1 chromosome and push it to next generation.
+This should be non-negative decimal which is 1 or less. Default value is 0.9.
+
+MUTATION is probability of each gene being mutated.
+This should be non-negative decimal which is 1 or less. Default value is 0.01.
+
+N-POINT-CROSSOVER is number of times crossovering per 1 crossovering process.
+If the value is t, it means unicrossover. This should be positive integer or t.
+
+SELECTOR is a function which selects chromsomes used to crossover or take over.
+This function should:
+   - take 1 argument, which is list of rate of each chromosome
+   - return index of selected chromosome
+   - NOT select the chromosome whose rate is nil
+This can be alias, which is defined in `egalgo-selector-alias'.
+
+TERMINATION is the number of maximum generation, or function which determine to
+termination the algorithm or not.
+If number, finish algorithm when generation become the value.
+If function, continue algorithm when the function returns non-nil. The function
+take 2 arguments, stack list of rates of all generation and generation number.
+First element of the stack list is rates (list of rate of each chromosome) of
+latest generation, for example.
+"
   (let* ((chromosome-forms
           (egalgo--generate-chromosome-forms chromosome-definition))
          (next-chromosomes
