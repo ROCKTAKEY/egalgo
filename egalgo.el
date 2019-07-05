@@ -312,7 +312,7 @@ generation. Default value is 0.
                     (when (egalgo--rand-bool 0.5)
                       (egalgo--crossover (1+ n) selected1 selected2)))
                 ;; `n-point-crossover' point crossover.
-                (cl-dotimes (_n n-point-crossover)
+                (cl-dotimes (_ n-point-crossover)
                   (egalgo--crossover
                    (1+ (cl-random (1- length)))
                    selected1 selected2)))
