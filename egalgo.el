@@ -5,7 +5,7 @@
 ;; Author: ROCKTAKEY <rocktakey@gmail.com>
 ;; Keywords: data
 
-;; Version: 1.0.0
+;; Version: 1.0.1
 
 ;; URL: https://github.com/ROCKTAKEY/egalgo
 
@@ -193,6 +193,7 @@ CHROMOSOME-FORMS, which is generated from CHROMOSOME-DEFINITION."
                 (termination 1000)       ;integer: generation number.
                 (log nil)                ;bool
                 (elite 0)                ;non-negative integer
+                (show-rates nil)
                 ;; arguments showed below are available in the future.
                 (_async nil))             ;bool
   "Run genetic algorithm with CHROMOSOME-DEFINITION and RATER.
@@ -259,6 +260,9 @@ chromosomes of last generation. Default value is nil.
 
 ELITE is the number of elite chromosomes, which abusolutely stays until next
 generation. Default value is 0.
+
+If SHOW-RATES is t, display rates of chromosomes of each generation.
+Default value is nil.
 "
   (let* ((chromosome-forms
           (egalgo--generate-chromosome-forms chromosome-definition))
@@ -358,10 +362,12 @@ generation. Default value is 0.
             (!cdr rate-chromosome-alist))))
 
       ;; Message
-      (message "generation: %d / Max rate: %f / Average rate: %f\n%s"
+      (message "generation: %d / Max rate: %f / Average rate: %f%s"
                generation (-max rates)
                (/ (-sum rates) size)
-               (prin1-to-string rates)))
+               (if show-rates
+                   (concat "\n" (prin1-to-string rates))
+                 "")))
 
     ;; Result
     (setq

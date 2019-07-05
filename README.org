@@ -212,5 +212,10 @@
 
    Default value is 0.
 
+** ~show-rates~ (optional, keyword)
+   If the value is t, display rates of chromosomes of each generation.
+
+   Default value is nil.
+
 * License
   This package is licensed by GPLv3. See [[file:LICENSE][LICENSE]].
