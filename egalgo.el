@@ -242,6 +242,7 @@ This function should:
    - return index of selected chromosome
    - NOT select the chromosome whose rate is nil
 This can be alias, which is defined in `egalgo-selector-alias'.
+Default value is roulette, which means roulette selector.
 
 TERMINATION is the number of maximum generation, or function which determine to
 termination the algorithm or not.
@@ -250,6 +251,14 @@ If function, continue algorithm when the function returns non-nil. The function
 take 2 arguments, stack list of rates of all generation and generation number.
 First element of the stack list is rates (list of rate of each chromosome) of
 latest generation, for example.
+Default value is 1000.
+
+If LOG is t, plist returned by `egalgo-run' has value keyed by :chromosomes-log.
+This is stack list of chromosomes of each generation. car of it is same as
+chromosomes of last generation. Default value is nil.
+
+ELITE is the number of elite chromosomes, which abusolutely stays until next
+generation. Default value is 0.
 "
   (let* ((chromosome-forms
           (egalgo--generate-chromosome-forms chromosome-definition))

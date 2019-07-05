@@ -60,8 +60,9 @@
    #'knapsack-rater
    :termination 100
    :size 30
+   :elite 1                               ;keep 1 elite chromossomes
    :mutation 0.01
-   :n-point-crossover t)                  ;unicrossover
+   :n-point-crossover t)                  ;means unicrossover
 
   (egalgo-run
    '(t t t t t t t t t t)
@@ -186,6 +187,8 @@
 
    This can be alias, which is defined in ~egalgo-selector-alias~.
 
+   Default value is ~roulette~, which means roulette selector.
+
 ** ~termination~ (optional, keyword)
    ~termination~ is the number of maximum generation, or function which determine to
    termination the algorithm or not.
@@ -194,6 +197,20 @@
    take 2 arguments, stack list of rates of all generation and generation number.
    First element of the stack list is rates (list of rate of each chromosome) of
    latest generation, for example.
+
+   Default value is 1000.
+
+** ~log~ (optional, keyword)
+   If ~t~, plist returned by ~egalgo-run~ has value keyed by ~:chromosomes-log~.
+   This is stack list of chromosomes of each generation. car of it is same as
+   chromosomes of last generation.
+
+   Default value is nil.
+
+** ~elite~ (optional, keyword)
+   The number of elite chromosomes, which abusolutely stays until next generation.
+
+   Default value is 0.
 
 * License
   This package is licensed by GPLv3. See [[file:LICENSE][LICENSE]].
