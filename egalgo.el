@@ -192,8 +192,8 @@ CHROMOSOME-FORMS, which is generated from CHROMOSOME-DEFINITION."
                 (selector 'roulette)     ;function or alias
                 (termination 1000)       ;integer: generation number.
                 (log nil)                ;bool
+                (elite 0)                ;non-negative integer
                 ;; arguments showed below are available in the future.
-                (_elite 0)                ;non-negative integer
                 (_async nil))             ;bool
   "Run genetic algorithm with CHROMOSOME-DEFINITION and RATER.
 
@@ -259,6 +259,7 @@ latest generation, for example.
                        selector))
          (length (length chromosome-definition))
          (generation 0)
+         (size-except-elite (- size elite))
          rates i chromosomes selected-indexes rates-log-stack
          chromosomes-log-stack)
     (while
@@ -282,8 +283,8 @@ latest generation, for example.
       ;; Counter which has length of `next-chromosomes'.
       (setq i 0)
 
-      (while (< i size)
-        (if (and (< 1 (- size i))
+      (while (< i size-except-elite)
+        (if (and (< 1 (- size-except-elite i))
                  (egalgo--rand-bool crossover))
 
             ;; Crossover
@@ -326,6 +327,24 @@ latest generation, for example.
               (while (eq now
                          (setq new-ncl (eval (aref chromosome-forms n)))))
               (setf (nth n c) new-ncl)))))
+
+      ;; Elite
+      (unless (eq elite 0)
+        (let* (tmp
+               (rate-chromosome-alist
+                (dotimes (n size tmp)
+                  (push
+                   (cons (nth n rates)
+                         (nth n chromosomes))
+                   tmp))))
+          (setq rate-chromosome-alist
+                (sort rate-chromosome-alist
+                      (lambda (arg1 arg2)
+                        (> (car arg1) (car arg2)))))
+          (dotimes (_ elite)
+            (push (cdar rate-chromosome-alist)
+                  next-chromosomes)
+            (!cdr rate-chromosome-alist))))
 
       ;; Message
       (message "generation: %d / Max rate: %f / Average rate: %f\n%s"
