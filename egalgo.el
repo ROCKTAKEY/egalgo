@@ -193,6 +193,7 @@ CHROMOSOME-FORMS, which is generated from CHROMOSOME-DEFINITION."
                 (termination 1000)       ;integer: generation number.
                 (log nil)                ;bool
                 (elite 0)                ;non-negative integer
+                (show-rates nil)
                 ;; arguments showed below are available in the future.
                 (_async nil))             ;bool
   "Run genetic algorithm with CHROMOSOME-DEFINITION and RATER.
@@ -358,10 +359,12 @@ generation. Default value is 0.
             (!cdr rate-chromosome-alist))))
 
       ;; Message
-      (message "generation: %d / Max rate: %f / Average rate: %f\n%s"
+      (message "generation: %d / Max rate: %f / Average rate: %f%s"
                generation (-max rates)
                (/ (-sum rates) size)
-               (prin1-to-string rates)))
+               (if show-rates
+                   (concat "\n" (prin1-to-string rates))
+                 "")))
 
     ;; Result
     (setq
