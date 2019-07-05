@@ -5,7 +5,7 @@
 ;; Author: ROCKTAKEY <rocktakey@gmail.com>
 ;; Keywords: data
 
-;; Version: 1.0.0
+;; Version: 1.0.1
 
 ;; URL: https://github.com/ROCKTAKEY/egalgo
 
