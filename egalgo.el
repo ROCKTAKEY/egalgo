@@ -43,6 +43,10 @@
   :group 'lisp
   :prefix "egalgo-")
 
+(defvar egalgo-latest nil "Latest result of `egalgo-run'.")
+
+
+
 ;; Some functions
 
 (defsubst egalgo--rand-bool (probability)
@@ -174,21 +178,31 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
                 (_async nil))             ;bool
   (let* ((chromosome-forms
           (egalgo--generate-chromosome-forms chromosome-definition))
-         (chromosomes
+         (next-chromosomes
           (egalgo--generate-chromosomes-from-forms chromosome-forms size))
          (selector (or (cdr (assq selector egalgo-selector-alias))
                        selector))
          (length (length chromosome-definition))
          (generation 0)
-         i next-chromosomes selected-indexes old-rates rates)
+         rates i chromosomes selected-indexes rates-log-stack
+         chromosomes-log-stack)
     (while
-        (cl-case termination
-          (t
-           (if (integerp termination)
-               (<= generation termination)
-             (error "Wrong type of argument."))))
+        (or
+         (not rates-log-stack)
+         (pcase termination
+           ((pred functionp)
+            (funcall termination rates-log-stack generation))
+           ((pred integerp)
+            (<= generation termination))
+           (_ (error "Wrong type of argument"))))
+
+      (setq chromosomes next-chromosomes)
+      (when log (push chromosomes chromosomes-log-stack))
+      (setq next-chromosomes nil)
+      (setq generation (1+ generation))
 
       (setq rates (-map rater chromosomes))
+      (push rates rates-log-stack)
 
       ;; Counter which has length of `next-chromosomes'.
       (setq i 0)
@@ -238,21 +252,28 @@ Do not use 0 (and less) as INDEX. First gap is indexed 1."
                          (setq new-ncl (eval (aref chromosome-forms n)))))
               (setf (nth n c) new-ncl)))))
 
-      ;; Save
-      (setq old-rates rates)
-      (setq chromosomes next-chromosomes)
-
-      (setq next-chromosomes nil)
-
       (message "generation: %d / Max rate: %f / Average rate: %f\n%s"
                generation (-max rates)
                (/ (-sum rates) size)
-               (prin1-to-string rates))
+               (prin1-to-string rates)))
 
-      (setq generation (1+ generation)))
-
-    (list :chromosomes chromosomes
-          :rates rates)))
+    (setq
+     egalgo-latest
+     (let ((max-rate (-max rates))
+          indexes)
+      (list :chromosomes chromosomes
+            :rates rates
+            :chromosomes-log chromosomes-log-stack
+            :rates-log rates-log-stack
+            :max-rate max-rate
+            :max-chromosomes-indexes
+            (dotimes (n size)
+              (when (= (nth n rates) max-rate)
+                (push n indexes)))
+            :max-chromosomes
+            (--map
+             (nth it chromosomes)
+             indexes))))))
 
 (provide 'egalgo)
 ;;; egalgo.el ends here
