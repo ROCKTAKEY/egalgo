@@ -81,5 +81,67 @@
                   (equal it 3))))
     (should-not (equal first second))))
 
+(ert-deftest egalgo-run ()
+  (let ((goods
+         ;; (Volume . Value)
+         '((3 . 4)
+           (2 . 1)
+           (6 . 3)
+           (6 . 2)
+           (2 . 6)
+           (7 . 5)
+           (5 . 5)
+           (5 . 9)
+           (2 . 3)
+           (4 . 5)))
+        (knapsack-size 10))
+    (cl-flet
+        ((knapsack-rater
+          (chromosome)
+          (let ((value 0)
+                (volume 0))
+            (dotimes (i (length chromosome))
+              (when (nth i chromosome)
+                (setq volume (+ volume (car (nth i goods))))
+                (setq value  (+ value  (cdr (nth i goods))))))
+            (if (<= volume knapsack-size)
+                value
+              0))))
+
+      ;; Minimum running.
+      (egalgo-run
+       '(t t t t t t t t t t)                 ;t means boolean gene.
+       #'knapsack-rater)
+
+      ;; Additional running.
+      (egalgo-run
+       '(t t t t t t t t t t)                 ;t means boolean gene.
+       #'knapsack-rater
+       :size 50             ;Size of each generation.
+       :crossover 0.8       ;Probability of doing crossover.
+       :mutation 0.05       ;Probability of each gene mutating.
+       :n-point-crossover 2 ;means 2 point crossover. `t' means unicrossover.
+       :termination 200)    ;Number of maximum generation.
+
+      (egalgo-run
+       '(t t t t t t t t t t)                 ;t means boolean gene.
+       #'knapsack-rater
+       :termination 100
+       :size 30
+       :elite 1                               ;keep 1 elite chromossomes
+       :mutation 0.01
+       :n-point-crossover t)                  ;means unicrossover
+
+      (egalgo-run
+       '(t t t t t t t t t t)
+       #'knapsack-rater
+       ;; termination can be function.
+       :termination
+       (lambda (stack-of-rates _generation)
+         (or
+          (not (nth 1 stack-of-rates))
+          (< 10 (abs (- (-sum (nth 0 stack-of-rates))
+                        (-sum (nth 1 stack-of-rates)))))))))))
+
 (provide 'egalgo-test)
 ;;; egalgo-test.el ends here
