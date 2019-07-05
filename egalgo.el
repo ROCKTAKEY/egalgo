@@ -327,11 +327,13 @@ latest generation, for example.
                          (setq new-ncl (eval (aref chromosome-forms n)))))
               (setf (nth n c) new-ncl)))))
 
+      ;; Message
       (message "generation: %d / Max rate: %f / Average rate: %f\n%s"
                generation (-max rates)
                (/ (-sum rates) size)
                (prin1-to-string rates)))
 
+    ;; Result
     (setq
      egalgo-latest
      (let ((max-rate (-max rates))
