@@ -335,20 +335,20 @@ latest generation, for example.
     (setq
      egalgo-latest
      (let ((max-rate (-max rates))
-          indexes)
-      (list :chromosomes chromosomes
-            :rates rates
-            :chromosomes-log chromosomes-log-stack
-            :rates-log rates-log-stack
-            :max-rate max-rate
-            :max-chromosomes-indexes
-            (dotimes (n size)
-              (when (= (nth n rates) max-rate)
-                (push n indexes)))
-            :max-chromosomes
-            (--map
-             (nth it chromosomes)
-             indexes))))))
+           indexes)
+       (list :chromosomes chromosomes
+             :rates rates
+             :chromosomes-log chromosomes-log-stack
+             :rates-log rates-log-stack
+             :max-rate max-rate
+             :max-chromosomes-indexes
+             (dotimes (n size)
+               (when (= (nth n rates) max-rate)
+                 (push n indexes)))
+             :max-chromosomes
+             (--map
+              (nth it chromosomes)
+              indexes))))))
 
 (provide 'egalgo)
 ;;; egalgo.el ends here
