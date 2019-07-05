@@ -12,6 +12,7 @@ install:
   - tar -xaf emacs-bin-${EMACS_VERSION}.tar.gz -C /
   - export PATH=/tmp/emacs/bin/emacs:$PATH
   - export EMACS=/tmp/emacs/bin/emacs
+  - emacs --version
   # Cask
   - curl -fsSL https://raw.githubusercontent.com/cask/cask/master/go | python
   - export PATH="$HOME/.cask/bin:$PATH"
