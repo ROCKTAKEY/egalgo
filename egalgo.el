@@ -341,11 +341,13 @@ generation. Default value is 0.
       (unless (eq elite 0)
         (let* (tmp
                (rate-chromosome-alist
-                (dotimes (n size tmp)
-                  (push
-                   (cons (nth n rates)
-                         (nth n chromosomes))
-                   tmp))))
+                (progn
+                  (dotimes (n size)
+                    (push
+                     (cons (nth n rates)
+                           (nth n chromosomes))
+                     tmp))
+                  tmp)))
           (setq rate-chromosome-alist
                 (sort rate-chromosome-alist
                       (lambda (arg1 arg2)
