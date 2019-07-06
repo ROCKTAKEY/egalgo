@@ -75,9 +75,9 @@ FUNCTION should:
 (defun egalgo-roulette-selector (rates)
   "Select 1 chromosome by roulette from RATES.  Return index of the selected.
 RATES are list of rate of each chromosome, or nil (means unselectable)."
-  (let* ((temp (if (car rates) (car rates) 0))
+  (let* ((temp (or (car rates) 0))
          (r-sum
-          (--map (setq temp (+ (if it it 0) temp))
+          (--map (setq temp (+ (or it 0) temp))
                  rates))
          (sum (car (last r-sum)))
          (rand (cl-random (float sum)))
