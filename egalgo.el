@@ -316,7 +316,7 @@ Default value is nil.
                     (when (egalgo--rand-bool 0.5)
                       (egalgo--crossover (1+ n) selected1 selected2)))
                 ;; `n-point-crossover' point crossover.
-                (dotimes (_ n-point-crossover)
+                (--dotimes n-point-crossover
                   (egalgo--crossover
                    (1+ (cl-random (1- length)))
                    selected1 selected2)))
@@ -349,7 +349,7 @@ Default value is nil.
                 (sort rate-chromosome-alist
                       (lambda (arg1 arg2)
                         (> (car arg1) (car arg2)))))
-          (dotimes (_ elite)
+          (--dotimes elite
             (push (cdar rate-chromosome-alist)
                   next-chromosomes)
             (!cdr rate-chromosome-alist))))
