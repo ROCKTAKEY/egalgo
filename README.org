@@ -85,6 +85,7 @@
   You can get these value by using ~plist-get~. Use like
   ~(plist-get result-of-egalgo-run :chromosomes)~
 
+  In addition, ~egalgo-latest~ have result of latest ~egalgo-run~.
 * Arguments of ~egalgo-run~
   First and second argument (~chromosome-definition~ and ~rater~)
   are necessary, and other argument is optional.
