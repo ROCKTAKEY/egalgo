@@ -40,9 +40,16 @@
         0)))
 
   ;; Minimum running.
-  (egalgo-run
-   '(t t t t t t t t t t)                 ;t means boolean gene.
-   #'knapsack-rater)
+  (plist-get                              ;Get result from returned value
+   (egalgo-run
+    '(t t t t t t t t t t)                ;t means boolean gene.
+    #'knapsack-rater)
+   :max-rate)                             ;rate of best chromosome.
+
+  ;; You can get best chromosomes
+  (car                       ;if you need only one of them, use car.
+   (plist-get egalgo-latest  ;You can also access latest result like this.
+    :max-chromosomes))       ;list of best chromosomes.
 
   ;; Additional running.
   (egalgo-run
