@@ -196,7 +196,7 @@
     This should be positive integer or ~t~.
 
 ** ~selector~ (optional, keyword)
-   Function which /selects/ chromsomes used to crossover or take over.
+   Function which /selects/ chromosomes used to crossover or take over.
    This function should:
    - take 1 argument, which is list of rate of each chromosome
    - return index of selected chromosome
@@ -225,7 +225,7 @@
    Default value is nil.
 
 ** ~elite~ (optional, keyword)
-   The number of elite chromosomes, which abusolutely stays until next generation.
+   The number of elite chromosomes, which absolutely stays until next generation.
 
    Default value is 0.
 
