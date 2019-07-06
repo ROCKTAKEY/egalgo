@@ -343,15 +343,8 @@ Default value is nil.
 
       ;; Elite
       (unless (eq elite 0)
-        (let* (tmp
-               (rate-chromosome-alist
-                (progn
-                  (dotimes (n size)
-                    (push
-                     (cons (nth n rates)
-                           (nth n chromosomes))
-                     tmp))
-                  tmp)))
+        (let ((rate-chromosome-alist
+               (cl-mapcar #'cons rates chromosomes)))
           (setq rate-chromosome-alist
                 (sort rate-chromosome-alist
                       (lambda (arg1 arg2)
