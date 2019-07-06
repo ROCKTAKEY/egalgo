@@ -81,6 +81,15 @@
   ~egalgo-run~ returns plist. This have at least 2 elements.
   - ~:chromosomes~: list of all chromosomes of last generation.
   - ~:rates~: list of rates of all chromosomes of last generation.
+  - ~:rates-log~: list of list of rates of all chromosomes of each generation.
+    Latest rates are in the first of this list.
+  - ~:max-rate~: maximum rate of latest chromosomes' rates.
+  - ~:generation~: the number of total generations.
+  - ~:chromosomes-log~: list of list of chromosomes of each generation.
+    Latest chromosomes are in the first of this list. This is valid only when
+    the argument ~log~ is ~non-nil~.
+  - ~:max-chromosomes-indexes~: list of indexes of chromosomes rated maximum rate.
+  - ~:max-chromosomes~: list of chromosomes rated maximum rate.
 
   You can get these value by using ~plist-get~. Use like
   ~(plist-get result-of-egalgo-run :chromosomes)~
