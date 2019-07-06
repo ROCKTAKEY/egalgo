@@ -40,9 +40,16 @@
         0)))
 
   ;; Minimum running.
-  (egalgo-run
-   '(t t t t t t t t t t)                 ;t means boolean gene.
-   #'knapsack-rater)
+  (plist-get                              ;Get result from returned value
+   (egalgo-run
+    '(t t t t t t t t t t)                ;t means boolean gene.
+    #'knapsack-rater)
+   :max-rate)                             ;rate of best chromosome.
+
+  ;; You can get best chromosomes
+  (car                       ;if you need only one of them, use car.
+   (plist-get egalgo-latest  ;You can also access latest result like this.
+    :max-chromosomes))       ;list of best chromosomes.
 
   ;; Additional running.
   (egalgo-run
@@ -81,10 +88,20 @@
   ~egalgo-run~ returns plist. This have at least 2 elements.
   - ~:chromosomes~: list of all chromosomes of last generation.
   - ~:rates~: list of rates of all chromosomes of last generation.
+  - ~:rates-log~: list of list of rates of all chromosomes of each generation.
+    Latest rates are in the first of this list.
+  - ~:max-rate~: maximum rate of latest chromosomes' rates.
+  - ~:generation~: the number of total generations.
+  - ~:chromosomes-log~: list of list of chromosomes of each generation.
+    Latest chromosomes are in the first of this list. This is valid only when
+    the argument ~log~ is ~non-nil~.
+  - ~:max-chromosomes-indexes~: list of indexes of chromosomes rated maximum rate.
+  - ~:max-chromosomes~: list of chromosomes rated maximum rate.
 
   You can get these value by using ~plist-get~. Use like
   ~(plist-get result-of-egalgo-run :chromosomes)~
 
+  In addition, ~egalgo-latest~ have result of latest ~egalgo-run~.
 * Arguments of ~egalgo-run~
   First and second argument (~chromosome-definition~ and ~rater~)
   are necessary, and other argument is optional.
