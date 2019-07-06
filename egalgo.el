@@ -29,8 +29,8 @@
 ;; This package provides some functions which enable you to run genetic
 ;; algorithm in Emacs.
 
-;; `egalgo-run' is main function of this pakcage.  See README.org and document of
-;; the funciton.
+;; `egalgo-run' is main function of this package.  See README.org and document of
+;; the function.
 
 
 ;;; Code:
@@ -63,7 +63,7 @@
 
 (defvar egalgo-selector-alias
   '((roulette . egalgo-roulette-selector))
-  "Aliases for selectror of egalgo.
+  "Aliases for selector of egalgo.
 each element is cons cell (ALIAS . FUNCTION).  You can use ALIAS
 on the argument SELECTOR of `egalgo-run', instead of FUNCTION.
 
@@ -132,7 +132,7 @@ GENERATOR should be a function which takes 1 argument OBJECT detected by
 DETECTOR, and returns generated gene.")
 
 (defun egalgo--generate-range (arg)
-  "Genarate continuous gene.  ARG is vector which have 2 integer elements.
+  "Generate continuous gene.  ARG is vector which have 2 integer elements.
 Return decimal ranged from the first element to the second one."
   (let* ((bgn (float (aref arg 0)))
          (end (float (aref arg 1)))
@@ -237,7 +237,7 @@ This should be non-negative decimal which is 1 or less. Default value is 0.01.
 N-POINT-CROSSOVER is number of times crossovering per 1 crossovering process.
 If the value is t, it means unicrossover. This should be positive integer or t.
 
-SELECTOR is a function which selects chromsomes used to crossover or take over.
+SELECTOR is a function which selects chromosomes used to crossover or take over.
 This function should:
    - take 1 argument, which is list of rate of each chromosome
    - return index of selected chromosome
@@ -258,7 +258,7 @@ If LOG is t, plist returned by `egalgo-run' has value keyed by :chromosomes-log.
 This is stack list of chromosomes of each generation. car of it is same as
 chromosomes of last generation. Default value is nil.
 
-ELITE is the number of elite chromosomes, which abusolutely stays until next
+ELITE is the number of elite chromosomes, which absolutely stays until next
 generation. Default value is 0.
 
 If SHOW-RATES is t, display rates of chromosomes of each generation.
