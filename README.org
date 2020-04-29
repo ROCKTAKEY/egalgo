@@ -1,6 +1,7 @@
 [[https://github.com/ROCKTAKEY/egalgo][https://img.shields.io/github/tag/ROCKTAKEY/egalgo.svg?style=flat-square]]
 [[file:LICENSE][https://img.shields.io/github/license/ROCKTAKEY/egalgo.svg?style=flat-square]]
 [[https://github.com/ROCKTAKEY/egalgo/actions][https://img.shields.io/github/workflow/status/ROCKTAKEY/egalgo/CI/master.svg?style=flat-square]]
+[[https://melpa.org/#/egalgo][file:https://melpa.org/packages/egalgo-badge.svg]]
 * Genetic Algorithm for Emacs
   This package provides some functions which enable you to run genetic algorithm
   in Emacs.
