@@ -5,11 +5,11 @@
 ;; Author: ROCKTAKEY <rocktakey@gmail.com>
 ;; Keywords: data
 
-;; Version: 1.0.3
+;; Version: 1.0.4
 
 ;; URL: https://github.com/ROCKTAKEY/egalgo
 
-;; Package-Requires: ((dash "2.14") (emacs "24.3"))
+;; Package-Requires: ((emacs "24.3"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@
 ;;; Code:
 
 (require 'cl-lib)
-(require 'dash)
 
 (defgroup egalgo ()
   "Group for egalgo."
@@ -75,15 +74,23 @@ FUNCTION should:
 (defun egalgo-roulette-selector (rates)
   "Select 1 chromosome by roulette from RATES.  Return index of the selected.
 RATES are list of rate of each chromosome, or nil (means unselectable)."
-  (let* ((temp (or (car rates) 0))
-         (r-sum
-          (--map (setq temp (+ (or it 0) temp))
-                 rates))
-         (sum (car (last r-sum)))
-         (rand (cl-random (float sum)))
-         (i 0))
-    (--each-while r-sum (< it rand) (setq i (1+ i)))
-    i))
+  (let* ((accumulation
+          (let ((temp (list (or (car rates) 0))))
+            (cl-reduce
+             (lambda (x y)
+               (let ((v (+ (or x 0) (or y 0))))
+                 (push v temp)
+                 v))
+             rates)
+            (nreverse temp)))
+         (sum (car (last accumulation)))
+         (rand (cl-random (float sum))))
+    (cl-some
+     (lambda (sum index)
+       (when (<= rand sum)
+         index))
+     accumulation
+     (number-sequence 0 (length accumulation)))))
 
 (defun egalgo--select-2 (rates selector)
   "Select 2 chromosomes with roulette using RATES by SELECTOR.
@@ -155,18 +162,22 @@ Return decimal ranged from the first element to the second one."
   "Generate chromosome-forms from CHROMOSOME-DEFINITION.
 Return vector, each element of which is a form returning gene if evaluated."
   (vconcat
-   (--map `(,(cdr (-first
-                   (lambda (arg) (funcall (car arg) it))
-                   egalgo--generate-alist))
-            ',it)
-          chromosome-definition)))
+   (mapcar
+    (lambda (locus)
+      `(,(cdr (cl-some
+               (lambda (arg)
+                 (when (funcall (car arg) locus)
+                  arg))
+               egalgo--generate-alist))
+        ',locus))
+    chromosome-definition)))
 
 (defun egalgo--generate-chromosomes-from-forms (chromosome-forms size)
   "Generate SIZE chromosomes using CHROMOSOME-FORMS.
 Each element of chromosome is generated to evaluate each element of
 CHROMOSOME-FORMS."
   (let (result)
-    (--dotimes size
+    (dotimes (_ size)
       (push
        (cl-map 'list 'eval chromosome-forms)
        result))
@@ -289,7 +300,7 @@ Default value is nil."
       (setq next-chromosomes nil)
       (setq generation (1+ generation))
 
-      (setq rates (-map rater chromosomes))
+      (setq rates (mapcar rater chromosomes))
       (push rates rates-log-stack)
 
       ;; Counter which has length of `next-chromosomes'.
@@ -315,7 +326,7 @@ Default value is nil."
                     (when (egalgo--rand-bool 0.5)
                       (egalgo--crossover (1+ n) selected1 selected2)))
                 ;; `n-point-crossover' point crossover.
-                (--dotimes n-point-crossover
+                (dotimes (_ n-point-crossover)
                   (egalgo--crossover
                    (1+ (cl-random (1- length)))
                    selected1 selected2)))
@@ -348,15 +359,15 @@ Default value is nil."
                 (sort rate-chromosome-alist
                       (lambda (arg1 arg2)
                         (> (car arg1) (car arg2)))))
-          (--dotimes elite
+          (dotimes (_ elite)
             (push (cdar rate-chromosome-alist)
                   next-chromosomes)
             (!cdr rate-chromosome-alist))))
 
       ;; Message
       (message "generation: %d / Max rate: %f / Average rate: %f%s"
-               generation (-max rates)
-               (/ (-sum rates) size)
+               generation (apply #'max rates)
+               (/ (apply #'+ rates) size)
                (if show-rates
                    (concat "\n" (prin1-to-string rates))
                  "")))
@@ -364,22 +375,24 @@ Default value is nil."
     ;; Result
     (setq
      egalgo-latest
-     (let ((max-rate (-max rates))
-           indexes)
+     (let* ((max-rate (apply #'max rates))
+            (max-rate-chromosomes
+             (cl-mapcar
+              (lambda (max? index)
+                (when max?
+                  chromosomes))
+              (mapcar
+               (apply-partially #'= max-rate)
+               rates)
+              chromosomes)))
        (list :chromosomes chromosomes
              :rates rates
              :rates-log rates-log-stack
              :max-rate max-rate
              :generation generation
              :chromosomes-log chromosomes-log-stack
-             :max-chromosomes-indexes
-             (dotimes (n size)
-               (when (= (nth n rates) max-rate)
-                 (push n indexes)))
              :max-chromosomes
-             (--map
-              (nth it chromosomes)
-              indexes))))))
+             max-rate-chromosomes)))))
 
 (provide 'egalgo)
 ;;; egalgo.el ends here
