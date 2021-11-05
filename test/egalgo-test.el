@@ -24,6 +24,13 @@
 
 ;;; Code:
 (require 'ert)
+
+(require 'undercover)
+(undercover "*.el"
+            (:report-format 'codecov)
+            (:report-file "coverage-final.json")
+            (:send-report nil))
+
 (require 'egalgo)
 
 (ert-deftest egalgo--crossover ()

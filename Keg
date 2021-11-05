@@ -1,0 +1,6 @@
+(source gnu melpa)
+
+(package (egalgo
+          (recipe . (:fetcher github :repo "ROCKTAKEY/egalgo"))))
+
+(dev-dependency undercover)
